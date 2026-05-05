@@ -1,0 +1,161 @@
+/* --- CÀI ĐẶT CHUNG (RESET CSS) --- */
+/* Xóa bỏ lề (margin) và khoảng đệm (padding) mặc định của trình duyệt để dễ căn chỉnh */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Đặt màu nền tối cho toàn bộ trang web giống trong ảnh */
+body {
+    background-color: #121421; /* Màu xanh đen rất tối */
+    color: white; /* Chữ mặc định màu trắng */
+}
+
+/* --- 1. THANH ĐIỀU HƯỚNG (HEADER) --- */
+.header {
+    display: flex; /* Dùng Flexbox để xếp các phần tử nằm ngang */
+    justify-content: space-between; /* Đẩy logo, tìm kiếm, nút sang 3 khu vực khác nhau */
+    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+    padding: 15px 40px; /* Khoảng cách bên trong: trên/dưới 15px, trái/phải 40px */
+    background-color: #181b2d; /* Màu nền header hơi sáng hơn nền body 1 chút */
+    border-bottom: 1px solid #23273e; /* Đường viền mỏng phân cách ở dưới */
+}
+
+/* Logo T36 */
+.logo {
+    font-size: 32px;
+    font-weight: 900; /* In đậm */
+    color: #6b66ff; /* Màu tím xanh */
+    letter-spacing: 2px; /* Khoảng cách giữa các chữ cái */
+}
+
+/* Vùng bọc thanh tìm kiếm */
+.search-box {
+    display: flex; /* Để input và icon kính lúp nằm ngang */
+    background-color: #d9d9d9; /* Màu nền xám nhạt */
+    border-radius: 8px; /* Bo góc mượt mà */
+    width: 400px;
+    height: 35px;
+    overflow: hidden; /* Giữ các phần tử bên trong không bị tràn ra ngoài góc bo */
+}
+
+/* Ô nhập liệu chữ để tìm kiếm */
+.search-input {
+    flex-grow: 1; /* Chiếm hết không gian còn lại trong khung xám */
+    border: none; /* Bỏ viền mặc định */
+    outline: none; /* Bỏ viền xanh khi nhấp vào */
+    padding: 0 15px; /* Tạo khoảng trống 2 bên cho chữ */
+    background: transparent; /* Nền trong suốt để thấy nền xám */
+    font-size: 14px;
+}
+
+/* Nút icon kính lúp */
+.search-button {
+    background: transparent;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer; /* Đổi thành hình bàn tay khi di chuột vào */
+    font-size: 16px;
+}
+
+/* Khu vực nút Đăng nhập / Đăng ký */
+.auth-buttons {
+    display: flex;
+    gap: 15px; /* Khoảng cách giữa 2 nút là 15px */
+}
+
+/* Định dạng chung cho 2 nút Đăng Nhập/Đăng Ký */
+.btn {
+    padding: 6px 14px;
+    border: none;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2); /* Bóng nhẹ */
+}
+
+/* --- 2. NỘI DUNG CHÍNH (MAIN) --- */
+.main-content {
+    padding: 30px 60px; /* Cách lề trên dưới 30px, trái phải 60px */
+}
+
+/* Thanh chứa nút Thể loại và Tiêu đề 'Trang chủ' */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Căn giữa nội dung bên trong */
+    position: relative; /* Làm điểm chuẩn để định vị nút 'Thể loại' */
+    margin-bottom: 30px; /* Khoảng cách với khung game ở dưới */
+}
+
+/* Nút hình tròn 'Thể loại' */
+.category-button {
+    position: absolute; /* Đặt vị trí tự do so với .top-bar */
+    left: 0; /* Ép nút nằm sát bên trái */
+    width: 70px;
+    height: 70px;
+    border-radius: 50%; /* Bí quyết tạo hình tròn: border-radius 50% */
+    background-color: #c18cff; /* Màu tím nhạt/sáng */
+    color: black;
+    border: none;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Bóng đổ tạo chiều sâu */
+}
+
+/* Tiêu đề 'Trang chủ' */
+.page-title {
+    font-size: 38px;
+    color: #00e5ff; /* Màu xanh lơ (cyan) */
+    font-weight: bold;
+}
+
+/* --- 3. KHU VỰC LƯỚI GAME --- */
+/* Khung to bao bọc xung quanh các ô game */
+.game-container {
+    background-color: #21263c; /* Màu xanh xám đậm */
+    padding: 50px; /* Khoảng trống từ viền khung vào đến các ô vuông */
+    border-radius: 40px; /* Bo tròn mạnh các góc của khung to */
+}
+
+/* Cấu trúc Lưới (Grid) chứa các ô game */
+.game-grid {
+    display: grid; /* Kích hoạt chế độ chia lưới Grid */
+    grid-template-columns: repeat(5, 1fr); /* Chia thành 5 cột bằng nhau (1fr = 1 phần linh hoạt) */
+    gap: 30px; /* Khoảng cách đều nhau giữa các ô là 30px */
+}
+
+/* Định dạng từng ô vuông (game card) */
+.game-card {
+    background-color: #6c6fff; /* Màu tím xanh đặc trưng của từng ô */
+    border-radius: 15px; /* Bo góc nhẹ cho mỗi ô */
+    
+    /* Thủ thuật cực hay: aspect-ratio: 1/1 giúp ép chiều cao luôn bằng chiều rộng để tạo hình vuông tuyệt đối */
+    aspect-ratio: 1 / 1; 
+    
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Bóng đổ dưới mỗi ô */
+    transition: transform 0.2s; /* Làm mượt hiệu ứng khi di chuột */
+}
+
+/* Hiệu ứng khi người dùng di chuột (hover) lên ô game */
+.game-card:hover {
+    transform: translateY(-8px); /* Ô game sẽ dịch chuyển (nổi lên) trên 8px */
+    cursor: pointer;
+}
+
+/* --- ĐÁP ỨNG THIẾT BỊ (RESPONSIVE) --- */
+/* Nếu màn hình thu nhỏ lại, số lượng cột sẽ tự động giảm xuống cho vừa vặn */
+@media (max-width: 1200px) {
+    .game-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 900px) {
+    .game-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+    .game-grid { grid-template-columns: repeat(2, 1fr); }
+}
