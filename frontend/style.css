@@ -1,161 +1,688 @@
-/* --- CÀI ĐẶT CHUNG (RESET CSS) --- */
-/* Xóa bỏ lề (margin) và khoảng đệm (padding) mặc định của trình duyệt để dễ căn chỉnh */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ============================================
+   style.css - Phong cách chung cho Cổng Mini Game T36
+   Tác giả: Frontend Developer T36
+   Mô tả: Dark Mode Gaming UI - sử dụng màu xanh đen,
+          tím đậm, và xanh neon làm điểm nhấn
+   ============================================ */
+
+/* ---------- Import Font từ Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---------- CSS Reset & Box Model ---------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Đặt màu nền tối cho toàn bộ trang web giống trong ảnh */
+/* ---------- Biến CSS (Design Tokens) ---------- */
+:root {
+  /* Màu nền chính - xanh đen đậm */
+  --color-bg-primary:    #0f172a;
+  /* Màu nền thứ cấp - tối hơn một chút */
+  --color-bg-secondary:  #1e293b;
+  /* Màu nền thẻ game - tím đậm */
+  --color-card-bg:       #6c63ff;
+  /* Màu nền card hover */
+  --color-card-hover:    #7c3aed;
+  /* Màu điểm nhấn neon xanh lam */
+  --color-neon-blue:     #00d4ff;
+  /* Màu điểm nhấn neon tím */
+  --color-neon-purple:   #a855f7;
+  /* Màu logo T36 */
+  --color-logo:          #818cf8;
+  /* Màu chữ chính */
+  --color-text-primary:  #f1f5f9;
+  /* Màu chữ phụ */
+  --color-text-muted:    #94a3b8;
+  /* Màu viền neon khi hover */
+  --color-glow-border:   #00d4ff;
+  /* Màu nền khu vực lưới game */
+  --color-grid-bg:       #1a1f35;
+  /* Màu nút Đăng nhập */
+  --color-btn-login:     #e2e8f0;
+  /* Màu nút Đăng ký */
+  --color-btn-register:  #f87171;
+  /* Màu form card - tím trung bình */
+  --color-form-card:     #3730a3;
+  /* Màu input */
+  --color-input-bg:      #d1d5db;
+  /* Bo góc chuẩn */
+  --radius-card:         18px;
+  --radius-btn:          10px;
+  --radius-input:        8px;
+  /* Hiệu ứng đổ bóng neon */
+  --glow-neon:           0 0 10px #00d4ff, 0 0 20px #00d4ff44;
+  --glow-purple:         0 0 10px #a855f7, 0 0 20px #a855f744;
+  /* Thời gian hiệu ứng chuyển tiếp */
+  --transition-speed:    0.3s;
+}
+
+/* ---------- Body & Nền Chung ---------- */
 body {
-    background-color: #121421; /* Màu xanh đen rất tối */
-    color: white; /* Chữ mặc định màu trắng */
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-/* --- 1. THANH ĐIỀU HƯỚNG (HEADER) --- */
+/* ============================================
+   HEADER - Thanh điều hướng trên cùng
+   ============================================ */
 .header {
-    display: flex; /* Dùng Flexbox để xếp các phần tử nằm ngang */
-    justify-content: space-between; /* Đẩy logo, tìm kiếm, nút sang 3 khu vực khác nhau */
-    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
-    padding: 15px 40px; /* Khoảng cách bên trong: trên/dưới 15px, trái/phải 40px */
-    background-color: #181b2d; /* Màu nền header hơi sáng hơn nền body 1 chút */
-    border-bottom: 1px solid #23273e; /* Đường viền mỏng phân cách ở dưới */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background-color: var(--color-bg-primary);
+  /* Đường viền dưới phân tách header */
+  border-bottom: 1px solid #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 20px;
 }
 
-/* Logo T36 */
-.logo {
-    font-size: 32px;
-    font-weight: 900; /* In đậm */
-    color: #6b66ff; /* Màu tím xanh */
-    letter-spacing: 2px; /* Khoảng cách giữa các chữ cái */
+/* Logo T36 - chữ nổi bật phong cách gaming */
+.header__logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--color-logo);
+  text-decoration: none;
+  letter-spacing: 2px;
+  /* Hiệu ứng phát sáng cho logo */
+  text-shadow: var(--glow-purple);
+  white-space: nowrap;
+  transition: color var(--transition-speed), text-shadow var(--transition-speed);
 }
 
-/* Vùng bọc thanh tìm kiếm */
-.search-box {
-    display: flex; /* Để input và icon kính lúp nằm ngang */
-    background-color: #d9d9d9; /* Màu nền xám nhạt */
-    border-radius: 8px; /* Bo góc mượt mà */
-    width: 400px;
-    height: 35px;
-    overflow: hidden; /* Giữ các phần tử bên trong không bị tràn ra ngoài góc bo */
+.header__logo:hover {
+  color: var(--color-neon-blue);
+  text-shadow: var(--glow-neon);
 }
 
-/* Ô nhập liệu chữ để tìm kiếm */
-.search-input {
-    flex-grow: 1; /* Chiếm hết không gian còn lại trong khung xám */
-    border: none; /* Bỏ viền mặc định */
-    outline: none; /* Bỏ viền xanh khi nhấp vào */
-    padding: 0 15px; /* Tạo khoảng trống 2 bên cho chữ */
-    background: transparent; /* Nền trong suốt để thấy nền xám */
-    font-size: 14px;
+/* Thanh tìm kiếm ở giữa header */
+.header__search {
+  flex: 1;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid #334155;
+  border-radius: 50px;
+  padding: 8px 18px;
+  gap: 10px;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-/* Nút icon kính lúp */
-.search-button {
-    background: transparent;
-    border: none;
-    padding: 0 10px;
-    cursor: pointer; /* Đổi thành hình bàn tay khi di chuột vào */
-    font-size: 16px;
+.header__search:focus-within {
+  border-color: var(--color-neon-blue);
+  box-shadow: var(--glow-neon);
 }
 
-/* Khu vực nút Đăng nhập / Đăng ký */
-.auth-buttons {
-    display: flex;
-    gap: 15px; /* Khoảng cách giữa 2 nút là 15px */
+.header__search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
 }
 
-/* Định dạng chung cho 2 nút Đăng Nhập/Đăng Ký */
+.header__search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Icon tìm kiếm */
+.header__search-icon {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color var(--transition-speed);
+}
+
+.header__search:focus-within .header__search-icon {
+  color: var(--color-neon-blue);
+}
+
+/* Nhóm nút Đăng nhập / Đăng ký */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+/* Nút chung cho header */
 .btn {
-    padding: 6px 14px;
-    border: none;
-    background-color: white;
-    color: black;
-    font-weight: bold;
-    font-size: 12px;
-    cursor: pointer;
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.2); /* Bóng nhẹ */
+  padding: 8px 20px;
+  border-radius: var(--radius-btn);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all var(--transition-speed);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* --- 2. NỘI DUNG CHÍNH (MAIN) --- */
+/* Nút Đăng nhập - nền sáng nhạt */
+.btn--login {
+  background-color: var(--color-btn-login);
+  color: #1e293b;
+  border-color: var(--color-btn-login);
+}
+
+.btn--login:hover {
+  background-color: var(--color-neon-blue);
+  border-color: var(--color-neon-blue);
+  color: #0f172a;
+  box-shadow: var(--glow-neon);
+  transform: translateY(-1px);
+}
+
+/* Nút Đăng ký - nền cam hồng */
+.btn--register {
+  background-color: var(--color-btn-register);
+  color: #fff;
+  border-color: var(--color-btn-register);
+}
+
+.btn--register:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 10px #ef444466;
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   LAYOUT CHÍNH - Sidebar + Main Content
+   ============================================ */
+.main-layout {
+  display: flex;
+  min-height: calc(100vh - 65px);
+}
+
+/* ============================================
+   SIDEBAR - Danh mục bên trái
+   ============================================ */
+.sidebar {
+  width: 90px;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  border-right: 1px solid #1e293b;
+  flex-shrink: 0;
+}
+
+/* Huy hiệu danh mục "Thể loại" */
+.sidebar__badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: var(--glow-purple);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.sidebar__badge:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px #a855f7, 0 0 32px #a855f744;
+}
+
+/* ============================================
+   NỘI DUNG CHÍNH - Trang chủ
+   ============================================ */
 .main-content {
-    padding: 30px 60px; /* Cách lề trên dưới 30px, trái phải 60px */
+  flex: 1;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Thanh chứa nút Thể loại và Tiêu đề 'Trang chủ' */
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Căn giữa nội dung bên trong */
-    position: relative; /* Làm điểm chuẩn để định vị nút 'Thể loại' */
-    margin-bottom: 30px; /* Khoảng cách với khung game ở dưới */
-}
-
-/* Nút hình tròn 'Thể loại' */
-.category-button {
-    position: absolute; /* Đặt vị trí tự do so với .top-bar */
-    left: 0; /* Ép nút nằm sát bên trái */
-    width: 70px;
-    height: 70px;
-    border-radius: 50%; /* Bí quyết tạo hình tròn: border-radius 50% */
-    background-color: #c18cff; /* Màu tím nhạt/sáng */
-    color: black;
-    border: none;
-    font-weight: 900;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Bóng đổ tạo chiều sâu */
-}
-
-/* Tiêu đề 'Trang chủ' */
+/* Tiêu đề trang "Trang chủ" */
 .page-title {
-    font-size: 38px;
-    color: #00e5ff; /* Màu xanh lơ (cyan) */
-    font-weight: bold;
+  font-family: 'Orbitron', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  /* Gradient chữ xanh neon sang tím */
+  background: linear-gradient(90deg, var(--color-neon-blue), var(--color-neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 28px;
+  text-align: center;
 }
 
-/* --- 3. KHU VỰC LƯỚI GAME --- */
-/* Khung to bao bọc xung quanh các ô game */
-.game-container {
-    background-color: #21263c; /* Màu xanh xám đậm */
-    padding: 50px; /* Khoảng trống từ viền khung vào đến các ô vuông */
-    border-radius: 40px; /* Bo tròn mạnh các góc của khung to */
+/* Khu vực chứa lưới game - nền tối hơn */
+.grid-container {
+  background-color: var(--color-grid-bg);
+  border-radius: 28px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 960px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* Cấu trúc Lưới (Grid) chứa các ô game */
+/* ============================================
+   LƯỚI GAME - 5 cột x 3 hàng = 15 ô (hiển thị 12 ô + 3 hidden nếu cần)
+   Thiết kế: 5 cột đều nhau
+   ============================================ */
 .game-grid {
-    display: grid; /* Kích hoạt chế độ chia lưới Grid */
-    grid-template-columns: repeat(5, 1fr); /* Chia thành 5 cột bằng nhau (1fr = 1 phần linh hoạt) */
-    gap: 30px; /* Khoảng cách đều nhau giữa các ô là 30px */
+  display: grid;
+  /* 5 cột đều nhau, responsive */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
 }
 
-/* Định dạng từng ô vuông (game card) */
+/* ============================================
+   THẺ GAME - Mỗi ô game
+   ============================================ */
 .game-card {
-    background-color: #6c6fff; /* Màu tím xanh đặc trưng của từng ô */
-    border-radius: 15px; /* Bo góc nhẹ cho mỗi ô */
-    
-    /* Thủ thuật cực hay: aspect-ratio: 1/1 giúp ép chiều cao luôn bằng chiều rộng để tạo hình vuông tuyệt đối */
-    aspect-ratio: 1 / 1; 
-    
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Bóng đổ dưới mỗi ô */
-    transition: transform 0.2s; /* Làm mượt hiệu ứng khi di chuột */
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(145deg, #6c63ff, #5b52e0);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* Viền mặc định trong suốt */
+  border: 2px solid transparent;
+  /* Hiệu ứng chuyển tiếp mượt mà */
+  transition:
+    transform var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    background var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  gap: 8px;
+  padding: 12px;
+  text-align: center;
 }
 
-/* Hiệu ứng khi người dùng di chuột (hover) lên ô game */
+/* Lớp phủ bóng bên trong thẻ */
+.game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ✨ Hiệu ứng HOVER - Phóng to và viền sáng neon */
 .game-card:hover {
-    transform: translateY(-8px); /* Ô game sẽ dịch chuyển (nổi lên) trên 8px */
-    cursor: pointer;
+  /* Phóng to nhẹ khi hover */
+  transform: scale(1.07) translateY(-4px);
+  /* Viền sáng màu xanh neon */
+  border-color: var(--color-glow-border);
+  /* Phát sáng neon xung quanh thẻ */
+  box-shadow:
+    0 0 12px var(--color-glow-border),
+    0 0 24px rgba(0, 212, 255, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg, #7c74ff, #6c63ff);
+  z-index: 1;
 }
 
-/* --- ĐÁP ỨNG THIẾT BỊ (RESPONSIVE) --- */
-/* Nếu màn hình thu nhỏ lại, số lượng cột sẽ tự động giảm xuống cho vừa vặn */
-@media (max-width: 1200px) {
-    .game-grid { grid-template-columns: repeat(4, 1fr); }
+/* Ô game "Coming Soon" - màu tối hơn, ít nổi bật */
+.game-card--coming-soon {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
-@media (max-width: 900px) {
-    .game-grid { grid-template-columns: repeat(3, 1fr); }
+
+.game-card--coming-soon:hover {
+  transform: scale(1.02);
+  border-color: #4b5563;
+  box-shadow: none;
+  opacity: 0.7;
 }
-@media (max-width: 600px) {
-    .game-grid { grid-template-columns: repeat(2, 1fr); }
+
+/* Icon emoji của game */
+.game-card__icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+/* Tên game */
+.game-card__name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.3;
+}
+
+/* Nhãn "Mới" */
+.game-card__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--color-neon-blue);
+  color: #0f172a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   TRANG ĐĂNG NHẬP / ĐĂNG KÝ
+   ============================================ */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+}
+
+/* Header thu gọn cho trang auth - chỉ có logo */
+.auth-header {
+  padding: 18px 28px;
+  border-bottom: 1px solid #1e293b;
+}
+
+/* Phần thân trang auth - căn giữa form */
+.auth-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 0;
+}
+
+/* Thanh chọn tab Đăng nhập / Đăng ký */
+.auth-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  position: relative;
+  margin-bottom: 0;
+}
+
+/* Đường kẻ ngang bên dưới tab */
+.auth-tabs::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #334155;
+}
+
+/* Nút tab Đăng nhập */
+.auth-tab {
+  padding: 12px 36px;
+  border: none;
+  border-radius: var(--radius-btn) var(--radius-btn) 0 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  position: relative;
+  z-index: 1;
+}
+
+/* Tab Đăng nhập - nền sáng */
+.auth-tab--login {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.auth-tab--login:hover,
+.auth-tab--login.active {
+  background-color: #f1f5f9;
+}
+
+/* Tab Đăng ký - nền hồng cam */
+.auth-tab--register {
+  background-color: #f87171;
+  color: #fff;
+}
+
+.auth-tab--register:hover,
+.auth-tab--register.active {
+  background-color: #ef4444;
+}
+
+/* Đường phân cách đứng giữa 2 tab */
+.auth-tabs__divider {
+  width: 3px;
+  height: 48px;
+  background: linear-gradient(to bottom, #f97316, #ef4444);
+  border-radius: 2px;
+  margin: 0 4px;
+  align-self: center;
+}
+
+/* Đường kẻ ngang bên dưới tab group */
+.auth-tabs-line {
+  width: 380px;
+  max-width: 90vw;
+  height: 1px;
+  background: #334155;
+  margin-bottom: 0;
+}
+
+/* Card form đăng nhập / đăng ký */
+.auth-form-card {
+  background: linear-gradient(160deg, #4338ca, #3730a3);
+  border-radius: 20px;
+  padding: 36px 40px 40px;
+  width: 380px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+  box-shadow: 0 8px 40px rgba(67, 56, 202, 0.35);
+  animation: fadeInUp 0.4s ease;
+}
+
+/* Hiệu ứng xuất hiện form */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Nhóm mỗi trường input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Nhãn trường input */
+.form-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* Ô nhập liệu */
+.form-input {
+  background-color: var(--color-input-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-input);
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #1e293b;
+  outline: none;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: var(--color-neon-blue);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+  background-color: #f8fafc;
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Nút submit trong form */
+.btn--submit {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 13px 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all var(--transition-speed);
+  margin-top: 6px;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+}
+
+.btn--submit:hover {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.6), 0 4px 20px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn--submit:active {
+  transform: translateY(0);
+}
+
+/* Thông báo lỗi form */
+.form-error {
+  color: #fca5a5;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: none;
+}
+
+.form-error.show {
+  display: block;
+}
+
+/* ============================================
+   THÔNG BÁO TOAST - Hiện nổi góc màn hình
+   ============================================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  border: 1px solid var(--color-neon-blue);
+  color: var(--color-text-primary);
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--glow-neon), 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ============================================
+   RESPONSIVE - Màn hình nhỏ hơn
+   ============================================ */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .header__logo {
+    font-size: 1.5rem;
+  }
+
+  .game-grid {
+    /* Thu về 3 cột trên tablet */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .main-content {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .grid-container {
+    padding: 20px;
+  }
+
+  .sidebar {
+    width: 64px;
+    padding: 16px 8px;
+  }
+
+  .sidebar__badge {
+    width: 46px;
+    height: 46px;
+    font-size: 0.55rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-grid {
+    /* Thu về 2 cột trên điện thoại */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .header__search {
+    display: none;
+  }
+
+  .btn {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
 }

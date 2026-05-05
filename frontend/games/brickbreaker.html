@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phá Gạch - Neon Breakout | T36</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+
+        :root {
+            --bg-color: #0d0d1c;
+            --surface-color: #1a1a2a;
+            --primary-neon: #ff0055;
+            /* Ball & accents */
+            --secondary-neon: #00f1fd;
+            /* Paddle */
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: var(--primary-neon);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 12px;
+            color: var(--secondary-neon);
+            opacity: 0.8;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .game-container {
+            position: relative;
+            background: var(--surface-color);
+            padding: 5px;
+            border-radius: 8px;
+            border: 2px solid var(--secondary-neon);
+            box-shadow: 0 0 20px rgba(0, 241, 253, 0.2);
+        }
+
+        canvas {
+            display: block;
+            background: #0a0a14;
+            border-radius: 4px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 28, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .overlay h2 {
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .overlay p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: var(--secondary-neon);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transform: skewX(-10deg);
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 15px rgba(0, 241, 253, 0.8);
+            transform: skewX(-10deg) scale(1.05);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .controls-hint {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="game-header">
+        <a href="../index.html" class="back-link">← Quay lại trang chủ</a>
+        <div class="logo">NEON BREAKOUT</div>
+        <div style="width: 150px;"></div>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item">
+            <span>SCORE</span>
+            <div id="score" class="stat-value">0</div>
+        </div>
+        <div class="stat-item">
+            <span>LIVES</span>
+            <div id="lives" class="stat-value" style="color: #ff0055; text-shadow: 0 0 10px rgba(255,0,85,0.5);">3</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+        <div id="readyOverlay" class="overlay">
+            <h2 style="color: var(--secondary-neon);">READY?</h2>
+            <p>Dùng mũi tên TRÁI / PHẢI để di chuyển giá đỡ</p>
+            <button class="btn" onclick="startGame()">Bắt đầu</button>
+        </div>
+
+        <div id="gameOverOverlay" class="overlay hidden">
+            <h2 id="endMessage" style="color: #ff0055;">GAME OVER</h2>
+            <p id="finalScoreText">Điểm: 0</p>
+            <button class="btn" onclick="startGame()">Chơi lại</button>
+            <button class="btn btn-outline" onclick="window.location.href='../index.html'">Thoát</button>
+        </div>
+    </div>
+
+    <div class="controls-hint">
+        Sử dụng phím mũi tên ⬅️ ➡️ để hứng bóng
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        const readyOverlay = document.getElementById('readyOverlay');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const endMessage = document.getElementById('endMessage');
+        const finalScoreText = document.getElementById('finalScoreText');
+
+        // Biến trò chơi
+        let score = 0;
+        let lives = 3;
+        let gameActive = false;
+        let animationId;
+
+        // Thanh đỡ (Paddle)
+        const paddleHeight = 10;
+        const paddleWidth = 100;
+        let paddleX = (canvas.width - paddleWidth) / 2;
+        let rightPressed = false;
+        let leftPressed = false;
+
+        // Quả bóng (Ball)
+        const ballRadius = 8;
+        let x = canvas.width / 2;
+        let y = canvas.height - 30;
+        let dx = 3;
+        let dy = -3;
+
+        // Gạch (Bricks)
+        const brickRowCount = 5;
+        const brickColumnCount = 8;
+        const brickWidth = 60;
+        const brickHeight = 20;
+        const brickPadding = 10;
+        const brickOffsetTop = 40;
+        const brickOffsetLeft = 25;
+        const brickColors = ['#ff0055', '#ff7f00', '#ffe600', '#39ff14', '#bc13fe'];
+
+        let bricks = [];
+
+        function initBricks() {
+            bricks = [];
+            for (let c = 0; c < brickColumnCount; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1, color: brickColors[r] };
+                }
+            }
+        }
+
+        // Lắng nghe phím
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+
+        function keyDownHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+        }
+
+        function keyUpHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+        }
+
+        function collisionDetection() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if (b.status === 1) {
+                        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                            dy = -dy;
+                            b.status = 0;
+                            score += 10;
+                            scoreElement.innerText = score;
+
+                            // Tăng tốc độ bóng một chút
+                            if (dx > 0) dx += 0.1; else dx -= 0.1;
+                            if (dy > 0) dy += 0.1; else dy -= 0.1;
+
+                            // Thắng game
+                            if (score === brickRowCount * brickColumnCount * 10) {
+                                gameWin();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff0055";
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#ff0055";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0; // Reset
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height - paddleHeight - 5, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#00f1fd";
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#00f1fd";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawBricks() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    if (bricks[c][r].status === 1) {
+                        let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                        let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = bricks[c][r].color;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = bricks[c][r].color;
+                        ctx.fill();
+                        ctx.closePath();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            collisionDetection();
+
+            // Đập tường trái/phải
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+
+            // Đập trần
+            if (y + dy < ballRadius) {
+                dy = -dy;
+            }
+            // Rớt xuống đáy
+            else if (y + dy > canvas.height - ballRadius - 5) {
+                if (x > paddleX && x < paddleX + paddleWidth) {
+                    // Chạm thanh đỡ, thay đổi góc nảy dựa trên vị trí chạm
+                    let hitPoint = x - (paddleX + paddleWidth / 2);
+                    dx = hitPoint * 0.15; // Phản xạ chéo
+                    dy = -dy;
+                } else if (y + dy > canvas.height) {
+                    lives--;
+                    livesElement.innerText = lives;
+                    if (!lives) {
+                        gameOver();
+                        return; // Dừng vẽ
+                    } else {
+                        // Reset vị trí
+                        x = canvas.width / 2;
+                        y = canvas.height - 30;
+                        dx = 3;
+                        dy = -3;
+                        paddleX = (canvas.width - paddleWidth) / 2;
+                    }
+                }
+            }
+
+            // Di chuyển thanh đỡ
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += 7;
+            } else if (leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+
+            x += dx;
+            y += dy;
+
+            if (gameActive) {
+                animationId = requestAnimationFrame(draw);
+            }
+        }
+
+        function startGame() {
+            readyOverlay.classList.add('hidden');
+            gameOverOverlay.classList.add('hidden');
+
+            score = 0;
+            lives = 3;
+            scoreElement.innerText = score;
+            livesElement.innerText = lives;
+
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            dx = 3;
+            dy = -3;
+            paddleX = (canvas.width - paddleWidth) / 2;
+
+            initBricks();
+            gameActive = true;
+
+            cancelAnimationFrame(animationId);
+            draw();
+        }
+
+        function gameOver() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            endMessage.innerText = "GAME OVER";
+            endMessage.style.color = "#ff0055";
+            finalScoreText.innerText = `Điểm: ${score}`;
+            gameOverOverlay.classList.remove('hidden');
+        }
+
+        function gameWin() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            endMessage.innerText = "YOU WIN!";
+            endMessage.style.color = "#39ff14";
+            finalScoreText.innerText = `Tuyệt đỉnh! Điểm: ${score}`;
+            gameOverOverlay.classList.remove('hidden');
+        }
+
+        // Vẽ lần đầu để màn hình Ready không trống trơn
+        initBricks();
+        drawBricks();
+        drawPaddle();
+        drawBall();
+    </script>
+</body>
+
+</html>
