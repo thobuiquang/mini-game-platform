@@ -25,5 +25,5 @@
 - **Link Test Case (Google Excel):** [Đang cập nhật...]
 
 ## 🚀 Hướng dẫn chạy dự án (Local)
-1. Clone dự án về máy: `git clone [link-repo-cua-ban]`
+1. Clone dự án về máy: `git clone https://github.com/thobuiquang/mini-game-platform.git`
 2. Mở file `frontend/index.html` trên trình duyệt để xem giao diện.
