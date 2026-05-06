@@ -11,6 +11,12 @@
  * ============================================================
  */
 
+const API_BASE_URL = 'http://localhost:5000';
+const BACKEND_TO_FRONTEND_GAME_NAME = {
+  brick_breaker: 'brickbreaker'
+};
+let backendGames = new Set();
+
 // ============================================================
 // PHẦN 1: ĐIỀU HƯỚNG TRANG
 // ============================================================
@@ -233,6 +239,29 @@ const GAME_ROUTES = {
   'brickbreaker': 'games/brickbreaker.html' // Game Phá gạch
 };
 
+function chuyenTenGameBackendSangFrontend(tenGameBackend) {
+  return BACKEND_TO_FRONTEND_GAME_NAME[tenGameBackend] || tenGameBackend;
+}
+
+async function taiDanhSachGameTuBackend() {
+  try {
+    const response = await fetch(API_BASE_URL + '/api/games');
+    if (!response.ok) {
+      throw new Error('Backend response error: ' + response.status);
+    }
+    const payload = await response.json();
+    if (!payload.success || !Array.isArray(payload.data)) {
+      throw new Error('Invalid games payload');
+    }
+
+    backendGames = new Set(payload.data.map((game) => chuyenTenGameBackendSangFrontend(game.name)));
+    return true;
+  } catch (_error) {
+    backendGames = new Set();
+    return false;
+  }
+}
+
 /**
  * Gắn sự kiện click cho tất cả các thẻ game trên lưới
  * Được gọi khi trang chủ (index.html) tải xong
@@ -251,6 +280,9 @@ function khoiTaoLuoiGame() {
         // Game chưa có - hiển thị thông báo
         event.preventDefault();
         hienToast('🔒 Game này sắp ra mắt! Hãy theo dõi T36 nhé!');
+      } else if (backendGames.size > 0 && !backendGames.has(loaiGame)) {
+        event.preventDefault();
+        hienToast('⚠️ Backend chưa bật game này, vui lòng thử lại sau!');
 
       } else if (GAME_ROUTES[loaiGame]) {
         // Game đã có đường dẫn - chuyển đến trang game
@@ -397,7 +429,7 @@ function capNhatHeaderNguoiDung() {
  * Hàm chính - chạy ngay khi DOM sẵn sàng
  * Kiểm tra đang ở trang nào để khởi tạo đúng chức năng
  */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
 
   // ----- Xác định trang hiện tại -----
   const trangHienTai = window.location.pathname;
@@ -406,6 +438,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ===== KHỞI TẠO CHO TRANG CHỦ (index.html) =====
   if (laTrangChu || !laTrangAuth) {
+    const daKetNoiBackend = await taiDanhSachGameTuBackend();
+    if (!daKetNoiBackend) {
+      hienToast('⚠️ Chưa kết nối được backend tại ' + API_BASE_URL);
+    }
+
     // Cập nhật header nếu người dùng đã đăng nhập (ẩn nút ĐN/ĐK, hiện avatar)
     capNhatHeaderNguoiDung();
 

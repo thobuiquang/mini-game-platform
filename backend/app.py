@@ -2,7 +2,8 @@
 
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from sqlalchemy.exc import OperationalError
 from sqlalchemy import select
 
 from database import Base, create_session_local, create_sqlite_engine
@@ -19,6 +20,24 @@ DEFAULT_GAMES = [
 ]
 
 
+def _seed_score_for_game(game_name: str, idx: int, duration_seconds: int) -> int:
+    if game_name == "caro":
+        # Keep seeded scores aligned with API validation: -1 (loss), 0 (draw), 1 (win).
+        return [-1, 0, 1, -1, 1][idx % 5]
+    if game_name == "snake":
+        # Snake score must not exceed duration // 2.
+        return min((idx + 1) * 10, duration_seconds // 2)
+    return (idx + 1) * 10
+
+
+def _score_is_seed_valid(game_name: str, score: int, duration_seconds: int) -> bool:
+    if game_name == "caro":
+        return score in {-1, 0, 1}
+    if game_name == "snake":
+        return 0 <= score <= (duration_seconds // 2)
+    return True
+
+
 def seed_data(session_local) -> None:
     with session_local() as db:
         existing_games = {game.name for game in db.execute(select(Game)).scalars().all()}
@@ -29,18 +48,25 @@ def seed_data(session_local) -> None:
 
     with session_local() as db:
         for game_name, _description in DEFAULT_GAMES:
-            count = db.execute(select(Score).where(Score.game_name == game_name)).scalars().all()
-            if len(count) >= 5:
+            existing_scores = db.execute(select(Score).where(Score.game_name == game_name)).scalars().all()
+
+            for idx, score_row in enumerate(existing_scores):
+                if _score_is_seed_valid(game_name, score_row.score, score_row.duration_seconds):
+                    continue
+                score_row.score = _seed_score_for_game(game_name, idx, score_row.duration_seconds)
+
+            if len(existing_scores) >= 5:
                 continue
-            missing = 5 - len(count)
+            missing = 5 - len(existing_scores)
             for idx in range(missing):
+                duration_seconds = 30 + idx * 10
                 db.add(
                     Score(
                         game_name=game_name,
                         player_name=f"Player_{game_name}_{idx + 1}",
-                        score=(idx + 1) * 10,
+                        score=_seed_score_for_game(game_name, idx, duration_seconds),
                         level=1 + (idx // 2),
-                        duration_seconds=30 + idx * 10,
+                        duration_seconds=duration_seconds,
                     )
                 )
         db.commit()
@@ -55,10 +81,38 @@ def create_app(database_url: str = "sqlite:///./games.db", seed: bool = True) ->
     app.config["SessionLocal"] = session_local
 
     if seed:
-        seed_data(session_local)
+        try:
+            seed_data(session_local)
+        except OperationalError as e:
+            # Trường hợp games.db cũ có schema khác (vd: thiếu cột games.name).
+            # Drop/recreate schema để chạy lại local dev được ngay.
+            msg = str(e).lower()
+            if "no such column" in msg and "games." in msg:
+                Base.metadata.drop_all(bind=engine)
+                Base.metadata.create_all(bind=engine)
+                seed_data(session_local)
+            else:
+                raise
 
     register_game_routes(app)
     register_score_routes(app)
+
+    @app.before_request
+    def handle_preflight():
+        if request.method != "OPTIONS":
+            return None
+        response = app.make_default_options_response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response
+
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response
 
     @app.errorhandler(400)
     def handle_bad_request(_error):
