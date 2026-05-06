@@ -1,111 +1,64 @@
-# Web Game Backend
+# Mini Game Platform Backend (Simple)
 
-Backend API cho nền tảng game HTML5 sử dụng FastAPI + SQLite + SQLAlchemy.
+Backend don gian cho du an mon hoc, dung Flask + SQLAlchemy + SQLite.
 
-## 1) Cài đặt
+## Yeu cau
 
-**Cách A — `uv` (khuyến nghị, Python 3.11+):**
+- Python 3.11+
+- uv
+
+## Cai dat
 
 ```bash
 cd backend
 uv sync
 ```
 
-**Cách B — pip:**
+## Chay server
 
 ```bash
 cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+uv run python app.py
 ```
 
-### Đổ dữ liệu game từ thư mục `games/`
+Server chay tai: `http://localhost:5000`
 
-```bash
-cd backend
-uv run python seed_database.py
-```
+## API Endpoints
 
-Script sẽ: tạo bảng (nếu thiếu), gọi **`seed_default_categories`** (action, casual, puzzle, …), rồi **`scan_games_folder`** để đồng bộ từ `STATIC_PATH`.
+### Games
 
-## Cấu trúc `app/` (theo PROMPT_AGENT_BACKEND_GAME_WITH_UV)
+- `GET /api/games`
+- `GET /api/games/<game_name>`
 
-- `app/models/base.py` — `Base` ORM
-- `app/middleware/cors.py` — đăng ký CORS
-- `app/routes/games.py` — list / detail / play
-- `app/routes/search.py` — `GET .../games/search`
-- `app/routes/health.py` — `GET /health` và `GET /api/v1/health`
-- `app/schemas/base.py` — schema dùng chung
-- `app/utils/validators.py`, `app/utils/helpers.py` — tiện ích nhỏ
-- `tests/test_routes_games.py`, `test_routes_categories.py`, `test_api_functional.py`, `test_api_boundary.py`, `test_static_files.py`, `test_schemas.py`, `test_utils.py`
+### Scores
 
-## 2) Chạy server
+- `POST /api/scores`
+- `GET /api/scores/<game_name>`
+- `GET /api/scores/<game_name>/top10`
 
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+## Response format
 
-Với **uv** (khuyến nghị):
-
-```bash
-cd backend
-uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-### Frontend + Backend cùng lúc (thử trên máy)
-
-1. Chạy lệnh `uvicorn` ở trên từ thư mục `backend` (để SQLite và `games/` đúng đường dẫn).
-2. Mở trình duyệt:
-   - **Giao diện:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/) → tự chuyển sang `/ui/` (danh sách game lấy từ API).
-   - **Swagger:** [http://localhost:8000/docs](http://localhost:8000/docs)
-   - **OpenAPI JSON:** [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
-
-Nếu CSDL chưa có game: dùng Swagger hoặc gọi scanner (Python) để đồng bộ từ `backend/games/*/game.json`.
-
-Thư mục frontend mặc định là `../frontend` (cùng repo). Đổi bằng biến môi trường `FRONTEND_PATH` nếu cần.
-
-## 3) API chính
-
-- `GET /api/v1/games`: danh sách game (paging/filter/sort)
-- `GET /api/v1/games/{game_id}`: chi tiết game
-- `GET /api/v1/games/search?q=...`: tìm kiếm game
-- `POST /api/v1/games/{game_id}/play`: cập nhật lượt chơi
-- `GET /api/v1/categories`: danh sách category
-- `GET /api/v1/health`: health check (có `timestamp`)
-- `GET /health`: health check ở root (có `timestamp`, không phụ thuộc version API)
-
-Error format thống nhất:
+Tat ca endpoint tra ve:
 
 ```json
 {
-  "success": false,
-  "error": "..."
+  "success": true,
+  "data": {},
+  "message": "Optional message"
 }
 ```
 
-## 4) Migration
+## Seed data
 
-SQL migration file: `migrations/001_create_tables.sql`
+Khi chay `app.py`, he thong tu dong:
 
-## 5) Games static
+- Tao bang `games`, `scores`
+- Seed 5 game: `brick_breaker`, `caro`, `flappy`, `snake`, `tetris`
+- Seed it nhat 5 diem cho moi game
 
-- Thư mục game: `games/`
-- URL public: `/static/games/...`
-- Ví dụ: `/static/games/game1/index.html`
-
-## 6) Scan games folder
-
-Hàm tiện ích: `app/utils/game_scanner.py`
-
-- Đọc metadata từ `game.json`
-- Tự động insert/update/delete game trong DB
-- Trả về tổng kết `{added, updated, deleted}`
-
-## 7) Chạy test + coverage
+## Chay test
 
 ```bash
-pytest --cov=app --cov-report=html --cov-report=term
+cd backend
+uv run pytest
 ```
-
-Coverage report HTML: `htmlcov/index.html`

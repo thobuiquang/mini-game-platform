@@ -1,32 +1,15 @@
 [project]
 name = "mini-game-platform-backend"
 version = "0.1.0"
-description = "Backend API for HTML5 mini-game platform"
+description = "Simple backend for mini-game platform coursework"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
-    "fastapi==0.104.1",
-    "uvicorn[standard]==0.24.0",
-    "sqlalchemy==2.0.23",
-    "python-dotenv==1.0.0",
-    "httpx==0.25.2",
-    "pytest==7.4.3",
-    "pytest-cov==4.1.0",
-    "pytest-asyncio==0.21.1",
+    "Flask==3.0.3",
+    "SQLAlchemy==2.0.36",
+    "pytest==8.3.3",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --cov=app --cov-report=term --cov-report=html --cov-branch --cov-fail-under=80"
-
-[tool.coverage.run]
-source = ["app"]
-omit = ["*/migrations/*"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise NotImplementedError",
-    "if TYPE_CHECKING:",
-]
+addopts = "-q"
