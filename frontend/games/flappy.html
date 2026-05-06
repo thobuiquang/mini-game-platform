@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird - Neon Flappy | T36</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+
+        :root {
+            --bg-color: #0d0d1c;
+            --surface-color: #1a1a2a;
+            --primary-neon: #ffe600;
+            /* Bird - Yellow */
+            --secondary-neon: #39ff14;
+            /* Pipes - Green */
+            --text-color: #ffffff;
+            --border-color: #00f1fd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .game-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: var(--primary-neon);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px rgba(255, 230, 0, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 12px;
+            color: var(--border-color);
+            opacity: 0.8;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .game-container {
+            position: relative;
+            background: var(--surface-color);
+            padding: 5px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(0, 241, 253, 0.2);
+        }
+
+        canvas {
+            display: block;
+            background: #0a0a14;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 28, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .overlay h2 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .overlay p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: var(--border-color);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transform: skewX(-10deg);
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 15px rgba(0, 241, 253, 0.8);
+            transform: skewX(-10deg) scale(1.05);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .controls-hint {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="game-header">
+        <a href="../index.html" class="back-link">← Quay lại trang chủ</a>
+        <div class="logo">NEON FLAPPY</div>
+        <div style="width: 150px;"></div>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item">
+            <span>SCORE</span>
+            <div id="score" class="stat-value">0</div>
+        </div>
+        <div class="stat-item">
+            <span>BEST</span>
+            <div id="bestScore" class="stat-value">0</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+        <div id="readyOverlay" class="overlay">
+            <h2 style="color: var(--primary-neon);">READY?</h2>
+            <p>Nhấn phím SPACE hoặc click chuột để bay</p>
+            <button class="btn" onclick="startGame()">Bắt đầu</button>
+        </div>
+
+        <div id="gameOverOverlay" class="overlay hidden">
+            <h2 style="color: #ff0055;">GAME OVER</h2>
+            <p id="finalScoreText">Điểm: 0</p>
+            <button class="btn" onclick="startGame()">Chơi lại</button>
+            <button class="btn btn-outline" onclick="window.location.href='../index.html'">Thoát</button>
+        </div>
+    </div>
+
+    <div class="controls-hint">
+        Spacebar / Click chuột / Chạm màn hình để nhảy
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const bestScoreElement = document.getElementById('bestScore');
+        const readyOverlay = document.getElementById('readyOverlay');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const finalScoreText = document.getElementById('finalScoreText');
+
+        let frames = 0;
+        let score = 0;
+        let bestScore = localStorage.getItem('flappyBest') || 0;
+        let gameActive = false;
+        let animationId;
+
+        bestScoreElement.innerText = bestScore;
+
+        const bird = {
+            x: 50,
+            y: 150,
+            width: 20,
+            height: 20,
+            velocity: 0,
+            gravity: 0.25,
+            jump: -5.5,
+            draw: function () {
+                ctx.fillStyle = '#ffe600';
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#ffe600';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.shadowBlur = 0;
+            },
+            update: function () {
+                this.velocity += this.gravity;
+                this.y += this.velocity;
+
+                // Chạm đất
+                if (this.y + this.height >= canvas.height) {
+                    this.y = canvas.height - this.height;
+                    gameOver();
+                }
+                // Chạm trần
+                if (this.y <= 0) {
+                    this.y = 0;
+                    this.velocity = 0;
+                }
+            },
+            flap: function () {
+                this.velocity = this.jump;
+            }
+        };
+
+        const pipes = {
+            position: [],
+            width: 50,
+            gap: 130,
+            dx: 2.5,
+            draw: function () {
+                for (let i = 0; i < this.position.length; i++) {
+                    let p = this.position[i];
+                    let topYPos = p.y;
+                    let bottomYPos = p.y + this.gap;
+
+                    ctx.fillStyle = '#39ff14';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#39ff14';
+
+                    // Ống trên
+                    ctx.fillRect(p.x, 0, this.width, topYPos);
+                    // Ống dưới
+                    ctx.fillRect(p.x, bottomYPos, this.width, canvas.height - bottomYPos);
+
+                    ctx.shadowBlur = 0;
+                }
+            },
+            update: function () {
+                if (frames % 100 === 0) {
+                    this.position.push({
+                        x: canvas.width,
+                        y: Math.random() * (canvas.height - this.gap - 100) + 50
+                    });
+                }
+
+                for (let i = 0; i < this.position.length; i++) {
+                    let p = this.position[i];
+                    let bottomYPos = p.y + this.gap;
+
+                    // Di chuyển ống
+                    p.x -= this.dx;
+
+                    // Xóa ống khi ra khỏi màn hình
+                    if (p.x + this.width <= 0) {
+                        this.position.shift();
+                        score += 1;
+                        scoreElement.innerText = score;
+                        if (score > bestScore) {
+                            bestScore = score;
+                            localStorage.setItem('flappyBest', bestScore);
+                            bestScoreElement.innerText = bestScore;
+                        }
+                    }
+
+                    // Va chạm
+                    if (bird.x + bird.width > p.x && bird.x < p.x + this.width &&
+                        (bird.y < p.y || bird.y + bird.height > bottomYPos)) {
+                        gameOver();
+                    }
+                }
+            },
+            reset: function () {
+                this.position = [];
+            }
+        };
+
+        function draw() {
+            ctx.fillStyle = '#0a0a14';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            pipes.draw();
+            bird.draw();
+        }
+
+        function update() {
+            bird.update();
+            pipes.update();
+        }
+
+        function loop() {
+            if (!gameActive) return;
+            update();
+            draw();
+            frames++;
+            animationId = requestAnimationFrame(loop);
+        }
+
+        function startGame() {
+            readyOverlay.classList.add('hidden');
+            gameOverOverlay.classList.add('hidden');
+            bird.y = 150;
+            bird.velocity = 0;
+            pipes.reset();
+            score = 0;
+            scoreElement.innerText = score;
+            frames = 0;
+            gameActive = true;
+            loop();
+        }
+
+        function gameOver() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            finalScoreText.innerText = `Điểm: ${score}`;
+            gameOverOverlay.classList.remove('hidden');
+        }
+
+        // Lệnh điều khiển
+        function handleJump(e) {
+            if (e.type === 'keydown' && e.code !== 'Space') return;
+            if (e.type === 'keydown') e.preventDefault(); // Chống cuộn trang khi bấm Space
+
+            if (gameActive) {
+                bird.flap();
+            } else if (!readyOverlay.classList.contains('hidden')) {
+                // startGame(); // Đã có nút bấm
+            }
+        }
+
+        window.addEventListener('keydown', handleJump);
+        canvas.addEventListener('mousedown', handleJump);
+        canvas.addEventListener('touchstart', handleJump);
+    </script>
+</body>
+
+</html>

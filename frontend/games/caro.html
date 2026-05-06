@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Caro - Neon Caro | T36</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+
+        :root {
+            --bg-color: #0d0d1c;
+            --surface-color: #1a1a2a;
+            --primary-neon: #bc13fe;
+            /* O player - Purple */
+            --secondary-neon: #00f1fd;
+            /* X player - Cyan */
+            --text-color: #ffffff;
+            --border-color: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: var(--secondary-neon);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .logo span.x {
+            color: var(--secondary-neon);
+            text-shadow: 0 0 10px var(--secondary-neon);
+        }
+
+        .logo span.o {
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px var(--primary-neon);
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: var(--surface-color);
+            padding: 10px 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .stat-item.active-x {
+            border-color: var(--secondary-neon);
+            box-shadow: 0 0 15px rgba(0, 241, 253, 0.2);
+        }
+
+        .stat-item.active-o {
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .x-score {
+            color: var(--secondary-neon);
+            text-shadow: 0 0 10px rgba(0, 241, 253, 0.5);
+        }
+
+        .o-score {
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+        }
+
+        .game-container {
+            position: relative;
+            background: var(--surface-color);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(15, 30px);
+            grid-template-rows: repeat(15, 30px);
+            gap: 2px;
+            background: var(--border-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            background: var(--surface-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .cell:hover {
+            background: #222238;
+        }
+
+        .cell.x {
+            color: var(--secondary-neon);
+            text-shadow: 0 0 10px var(--secondary-neon);
+        }
+
+        .cell.o {
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px var(--primary-neon);
+        }
+
+        .cell.win-path {
+            background: #2a2a4a;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 28, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .overlay h2 {
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .btn {
+            background: var(--text-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transform: skewX(-10deg);
+            transition: 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: skewX(-10deg) scale(1.05);
+        }
+
+        .btn.btn-x {
+            background: var(--secondary-neon);
+        }
+
+        .btn.btn-x:hover {
+            box-shadow: 0 0 15px var(--secondary-neon);
+        }
+
+        .btn.btn-o {
+            background: var(--primary-neon);
+            color: white;
+        }
+
+        .btn.btn-o:hover {
+            box-shadow: 0 0 15px var(--primary-neon);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="game-header">
+        <a href="../index.html" class="back-link">← Quay lại trang chủ</a>
+        <div class="logo">NEON <span class="x">X</span><span class="o">O</span></div>
+        <div style="width: 150px;"></div>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item active-x" id="turn-x">
+            <span>PLAYER X</span>
+            <div id="score-x" class="stat-value x-score">0</div>
+        </div>
+        <div class="stat-item" id="turn-o">
+            <span>PLAYER O</span>
+            <div id="score-o" class="stat-value o-score">0</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="board" id="board"></div>
+
+        <div id="gameOverOverlay" class="overlay hidden">
+            <h2 id="winnerText">X CHIẾN THẮNG!</h2>
+            <p>Luật: 5 quân liên tiếp (không bị chặn 2 đầu)</p>
+            <button class="btn" id="restartBtn" onclick="resetBoard()">Chơi ván mới</button>
+        </div>
+    </div>
+
+    <script>
+        const boardElement = document.getElementById('board');
+        const overlay = document.getElementById('gameOverOverlay');
+        const winnerText = document.getElementById('winnerText');
+        const restartBtn = document.getElementById('restartBtn');
+        const turnXElement = document.getElementById('turn-x');
+        const turnOElement = document.getElementById('turn-o');
+        const scoreXElement = document.getElementById('score-x');
+        const scoreOElement = document.getElementById('score-o');
+
+        const SIZE = 15;
+        let board = [];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let scoreX = 0;
+        let scoreO = 0;
+
+        function init() {
+            boardElement.innerHTML = '';
+            board = Array(SIZE).fill().map(() => Array(SIZE).fill(''));
+
+            for (let r = 0; r < SIZE; r++) {
+                for (let c = 0; c < SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.addEventListener('click', handleCellClick);
+                    boardElement.appendChild(cell);
+                }
+            }
+            updateTurnUI();
+        }
+
+        function handleCellClick(e) {
+            if (!gameActive) return;
+            const r = parseInt(e.target.dataset.row);
+            const c = parseInt(e.target.dataset.col);
+
+            if (board[r][c] !== '') return;
+
+            board[r][c] = currentPlayer;
+            e.target.innerText = currentPlayer;
+            e.target.classList.add(currentPlayer.toLowerCase());
+
+            const winPath = checkWin(r, c, currentPlayer);
+            if (winPath) {
+                endGame(currentPlayer, winPath);
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                updateTurnUI();
+            }
+        }
+
+        function updateTurnUI() {
+            if (currentPlayer === 'X') {
+                turnXElement.classList.add('active-x');
+                turnOElement.classList.remove('active-o');
+            } else {
+                turnOElement.classList.add('active-o');
+                turnXElement.classList.remove('active-x');
+            }
+        }
+
+        function checkWin(r, c, player) {
+            const directions = [
+                [[0, 1], [0, -1]], // Ngang
+                [[1, 0], [-1, 0]], // Dọc
+                [[1, 1], [-1, -1]], // Chéo chính
+                [[1, -1], [-1, 1]]  // Chéo phụ
+            ];
+
+            for (let dir of directions) {
+                let count = 1;
+                let path = [{ r, c }];
+                let blockedEnds = 0;
+
+                // Kiểm tra 2 hướng của 1 đường
+                for (let d of dir) {
+                    let step = 1;
+                    while (true) {
+                        const nr = r + d[0] * step;
+                        const nc = c + d[1] * step;
+
+                        if (nr < 0 || nr >= SIZE || nc < 0 || nc >= SIZE) {
+                            blockedEnds++;
+                            break;
+                        }
+
+                        if (board[nr][nc] === player) {
+                            count++;
+                            path.push({ r: nr, c: nc });
+                            step++;
+                        } else if (board[nr][nc] !== '') {
+                            blockedEnds++;
+                            break;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                // Luật Caro chuẩn: 5 ô liên tiếp và không bị chặn 2 đầu
+                if (count >= 5 && blockedEnds < 2) {
+                    return path;
+                }
+            }
+            return null;
+        }
+
+        function endGame(winner, winPath) {
+            gameActive = false;
+
+            // Highlight đường thắng
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                const r = parseInt(cell.dataset.row);
+                const c = parseInt(cell.dataset.col);
+                if (winPath.some(p => p.r === r && p.c === c)) {
+                    cell.classList.add('win-path');
+                }
+            });
+
+            setTimeout(() => {
+                overlay.classList.remove('hidden');
+                if (winner === 'X') {
+                    winnerText.innerText = 'PLAYER X THẮNG!';
+                    winnerText.style.color = 'var(--secondary-neon)';
+                    restartBtn.className = 'btn btn-x';
+                    scoreX++;
+                    scoreXElement.innerText = scoreX;
+                } else {
+                    winnerText.innerText = 'PLAYER O THẮNG!';
+                    winnerText.style.color = 'var(--primary-neon)';
+                    restartBtn.className = 'btn btn-o';
+                    scoreO++;
+                    scoreOElement.innerText = scoreO;
+                }
+            }, 500);
+        }
+
+        function resetBoard() {
+            overlay.classList.add('hidden');
+            gameActive = true;
+            currentPlayer = 'X';
+            init();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

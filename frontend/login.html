@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta Tags -->
+  <title>Đăng nhập / Đăng ký - T36 Mini Game</title>
+  <meta name="description" content="Đăng nhập hoặc tạo tài khoản mới để trải nghiệm Cổng Mini Game T36." />
+
+  <!-- Liên kết file CSS phong cách chung -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon dạng emoji -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body class="auth-page">
+
+  <!-- ============================================
+       HEADER THU GỌN - Chỉ hiển thị Logo T36
+       ============================================ -->
+  <header class="auth-header" role="banner">
+    <a href="index.html" class="header__logo" aria-label="T36 - Về trang chủ">T36</a>
+  </header>
+
+  <!-- ============================================
+       PHẦN THÂN TRANG - Chứa toàn bộ form auth
+       ============================================ -->
+  <main class="auth-body" role="main">
+
+    <!-- ===== THANH TAB: Đăng nhập | Đăng ký ===== -->
+    <div class="auth-tabs" role="tablist" aria-label="Chọn Đăng nhập hoặc Đăng ký">
+
+      <!-- Nút tab Đăng nhập -->
+      <button
+        id="tab-login"
+        class="auth-tab auth-tab--login active"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-login"
+        onclick="chuyenTab('login')"
+      >
+        Đăng Nhập
+      </button>
+
+      <!-- Đường phân cách đứng giữa 2 tab -->
+      <div class="auth-tabs__divider" aria-hidden="true"></div>
+
+      <!-- Nút tab Đăng ký -->
+      <button
+        id="tab-register"
+        class="auth-tab auth-tab--register"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-register"
+        onclick="chuyenTab('register')"
+      >
+        Đăng Ký
+      </button>
+    </div>
+
+    <!-- Đường kẻ ngang bên dưới tabs -->
+    <div class="auth-tabs-line" aria-hidden="true"></div>
+
+    <!-- ============================================
+         PANEL ĐĂNG NHẬP
+         ============================================ -->
+    <div
+      id="panel-login"
+      class="auth-form-card"
+      role="tabpanel"
+      aria-labelledby="tab-login"
+    >
+      <h2 style="color:#fff; font-family:'Orbitron',monospace; font-size:1.1rem; margin-bottom:4px;">
+        Chào mừng trở lại! 👋
+      </h2>
+
+      <!-- Form đăng nhập -->
+      <form id="form-login" novalidate onsubmit="xuLyDangNhap(event)">
+
+        <!-- Trường Tên đăng nhập -->
+        <div class="form-group">
+          <label for="login-username" class="form-label">Tên đăng nhập:</label>
+          <input
+            id="login-username"
+            type="text"
+            class="form-input"
+            placeholder="Nhập tên đăng nhập..."
+            autocomplete="username"
+            required
+            aria-required="true"
+          />
+          <span class="form-error" id="error-login-username">Vui lòng nhập tên đăng nhập!</span>
+        </div>
+
+        <!-- Trường Mật khẩu -->
+        <div class="form-group" style="margin-top:16px;">
+          <label for="login-password" class="form-label">Mật khẩu</label>
+          <input
+            id="login-password"
+            type="password"
+            class="form-input"
+            placeholder="Nhập mật khẩu..."
+            autocomplete="current-password"
+            required
+            aria-required="true"
+          />
+          <span class="form-error" id="error-login-password">Vui lòng nhập mật khẩu!</span>
+        </div>
+
+        <!-- Nút Đăng nhập -->
+        <button
+          id="btn-submit-login"
+          type="submit"
+          class="btn--submit"
+          style="margin-top:24px; width:100%;"
+        >
+          Đăng Nhập
+        </button>
+
+        <!-- Liên kết quay về trang chủ -->
+        <p style="text-align:center; margin-top:14px; color:rgba(255,255,255,0.6); font-size:0.82rem;">
+          Chưa có tài khoản?
+          <a href="#" onclick="chuyenTab('register'); return false;"
+             style="color:#60a5fa; text-decoration:none; font-weight:600;">
+            Đăng ký ngay
+          </a>
+        </p>
+      </form>
+    </div><!-- /#panel-login -->
+
+    <!-- ============================================
+         PANEL ĐĂNG KÝ
+         ============================================ -->
+    <div
+      id="panel-register"
+      class="auth-form-card"
+      role="tabpanel"
+      aria-labelledby="tab-register"
+      style="display:none;"
+    >
+      <h2 style="color:#fff; font-family:'Orbitron',monospace; font-size:1.1rem; margin-bottom:4px;">
+        Tạo tài khoản mới 🚀
+      </h2>
+
+      <!-- Form đăng ký -->
+      <form id="form-register" novalidate onsubmit="xuLyDangKy(event)">
+
+        <!-- Trường Tên đăng nhập -->
+        <div class="form-group">
+          <label for="reg-username" class="form-label">Tên đăng nhập:</label>
+          <input
+            id="reg-username"
+            type="text"
+            class="form-input"
+            placeholder="Chọn tên đăng nhập..."
+            autocomplete="username"
+            required
+            aria-required="true"
+          />
+          <span class="form-error" id="error-reg-username">Vui lòng nhập tên đăng nhập!</span>
+        </div>
+
+        <!-- Trường Mật khẩu -->
+        <div class="form-group" style="margin-top:16px;">
+          <label for="reg-password" class="form-label">Mật khẩu</label>
+          <input
+            id="reg-password"
+            type="password"
+            class="form-input"
+            placeholder="Tạo mật khẩu mạnh..."
+            autocomplete="new-password"
+            required
+            aria-required="true"
+          />
+          <span class="form-error" id="error-reg-password">Mật khẩu phải có ít nhất 6 ký tự!</span>
+        </div>
+
+        <!-- Trường Xác nhận lại mật khẩu -->
+        <div class="form-group" style="margin-top:16px;">
+          <label for="reg-confirm-password" class="form-label">Xác nhận lại mật khẩu:</label>
+          <input
+            id="reg-confirm-password"
+            type="password"
+            class="form-input"
+            placeholder="Nhập lại mật khẩu..."
+            autocomplete="new-password"
+            required
+            aria-required="true"
+          />
+          <span class="form-error" id="error-reg-confirm">Mật khẩu xác nhận không khớp!</span>
+        </div>
+
+        <!-- Nút Đăng ký -->
+        <button
+          id="btn-submit-register"
+          type="submit"
+          class="btn--submit"
+          style="margin-top:24px; width:100%;"
+        >
+          Đăng Ký
+        </button>
+
+        <!-- Liên kết chuyển sang đăng nhập -->
+        <p style="text-align:center; margin-top:14px; color:rgba(255,255,255,0.6); font-size:0.82rem;">
+          Đã có tài khoản?
+          <a href="#" onclick="chuyenTab('login'); return false;"
+             style="color:#60a5fa; text-decoration:none; font-weight:600;">
+            Đăng nhập
+          </a>
+        </p>
+      </form>
+    </div><!-- /#panel-register -->
+
+  </main><!-- /.auth-body -->
+
+  <!-- ============================================
+       TOAST THÔNG BÁO
+       ============================================ -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Liên kết file JavaScript -->
+  <script src="script.js"></script>
+
+</body>
+</html>
