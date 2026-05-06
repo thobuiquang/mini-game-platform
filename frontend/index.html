@@ -1,69 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <!-- Đảm bảo trang web hiển thị tốt trên mọi thiết bị -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Giao diện Game T36</title>
-    <!-- Liên kết với file CSS bên ngoài để định dạng giao diện -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <!-- 1. Thanh điều hướng trên cùng (Header) -->
+    <link rel="stylesheet" href="/ui/style.css" />
+  </head>
+  <body>
     <header class="header">
-        <!-- Logo bên trái -->
-        <div class="logo">T36</div>
-        
-        <!-- Thanh tìm kiếm ở giữa -->
-        <div class="search-box">
-            <input type="text" class="search-input" placeholder="">
-            <button class="search-button">
-                <!-- Sử dụng icon kính lúp đơn giản (emoji) -->
-                🔍
-            </button>
-        </div>
-        
-        <!-- Cụm nút Đăng nhập / Đăng ký bên phải -->
-        <div class="auth-buttons">
-            <button class="btn btn-login">Đăng Nhập</button>
-            <button class="btn btn-register">Đăng Ký</button>
-        </div>
+      <div class="logo">T36</div>
+
+      <div class="search-box">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Tìm game (Enter hoặc 🔍)"
+          autocomplete="off"
+        />
+        <button type="button" class="search-button" aria-label="Tìm kiếm">
+          🔍
+        </button>
+      </div>
+
+      <div class="auth-buttons">
+        <button type="button" class="btn btn-login">Đăng Nhập</button>
+        <button type="button" class="btn btn-register">Đăng Ký</button>
+      </div>
     </header>
 
-    <!-- 2. Phần nội dung chính (Main) -->
     <main class="main-content">
-        
-        <!-- Phần phía trên chứa nút Thể loại và Tiêu đề -->
-        <div class="top-bar">
-            <!-- Nút Thể loại hình tròn -->
-            <button class="category-button">Thể loại</button>
-            
-            <!-- Tiêu đề trang -->
-            <h1 class="page-title">Trang chủ</h1>
-        </div>
+      <div class="top-bar">
+        <button type="button" class="category-button">Thể loại</button>
+        <h1 class="page-title">Trang chủ</h1>
+      </div>
 
-        <!-- Khung chứa danh sách các trò chơi -->
-        <div class="game-container">
-            <!-- Lưới Grid chứa các ô vuông -->
-            <div class="game-grid">
-                <!-- Sử dụng 12 ô vuông tượng trưng cho 12 game theo yêu cầu -->
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-            </div>
-        </div>
-        
+      <p id="api-status" class="api-status" role="status"></p>
+
+      <div class="game-container">
+        <div id="game-grid" class="game-grid"></div>
+      </div>
     </main>
 
-</body>
+    <script src="/ui/app.js" defer></script>
+  </body>
 </html>
