@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta Tags -->
+  <title>T36 - Cổng Mini Game</title>
+  <meta name="description" content="Cổng Mini Game T36 - Chơi các game huyền thoại: Rắn săn mồi, Tetris, Caro, Flappy Bird, Phá gạch và nhiều hơn nữa!" />
+  <meta name="keywords" content="mini game, T36, rắn săn mồi, tetris, caro, flappy bird, phá gạch" />
+
+  <!-- Liên kết file CSS phong cách -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon dạng emoji -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body>
+
+  <!-- ============================================
+       HEADER - Thanh điều hướng trên cùng
+       Gồm: Logo T36 | Thanh tìm kiếm | Nút Đăng nhập & Đăng ký
+       ============================================ -->
+  <header class="header" role="banner">
+
+    <!-- Logo T36 - Nhấn vào để về trang chủ -->
+    <a href="index.html" class="header__logo" aria-label="T36 - Trang chủ">T36</a>
+
+    <!-- Thanh tìm kiếm game -->
+    <div class="header__search" role="search">
+      <span class="header__search-icon" aria-hidden="true">🔍</span>
+      <input
+        id="search-input"
+        type="search"
+        class="header__search-input"
+        placeholder="Chọn một trò chơi để bắt đầu giải trí..."
+        aria-label="Tìm kiếm game"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Nhóm nút hành động: Đăng nhập & Đăng ký -->
+    <div class="header__actions">
+      <!-- Nút Đăng nhập - script.js sẽ xử lý chuyển trang -->
+      <button
+        id="btn-header-login"
+        class="btn btn--login"
+        aria-label="Đăng nhập vào tài khoản"
+        onclick="chuyenDenDangNhap()"
+      >
+        Đăng Nhập
+      </button>
+
+      <!-- Nút Đăng ký -->
+      <button
+        id="btn-header-register"
+        class="btn btn--register"
+        aria-label="Tạo tài khoản mới"
+        onclick="chuyenDenDangKy()"
+      >
+        Đăng Ký
+      </button>
+
+      <!-- Thông tin người dùng sau khi đăng nhập (ẩn mặc định) -->
+      <div class="user-info" id="user-info" aria-label="Thông tin tài khoản" style="display:none;">
+        <div class="user-info__avatar" id="user-avatar" aria-hidden="true">👤</div>
+        <span class="user-info__name" id="user-display-name">Người dùng</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       LAYOUT CHÍNH: Sidebar + Nội dung chính
+       ============================================ -->
+  <div class="main-layout">
+
+    <!-- SIDEBAR - Danh mục thể loại game bên trái -->
+    <aside class="sidebar" role="complementary" aria-label="Danh mục thể loại">
+      <!-- Huy hiệu danh mục -->
+      <div class="sidebar__badge" title="Thể loại game" id="btn-category">
+        Thể<br>loại
+      </div>
+    </aside>
+
+    <!-- NỘI DUNG CHÍNH - Lưới game -->
+    <main class="main-content" role="main">
+
+      <!-- Tiêu đề trang -->
+      <h1 class="page-title">Trang chủ</h1>
+
+      <!-- Khu vực nền chứa lưới game -->
+      <section class="grid-container" aria-label="Danh sách game">
+
+        <!-- LƯỚI GAME - 5 cột × 3 hàng tạo ra 15 ô (chỉ hiển thị 12 ô theo thiết kế) -->
+        <!-- Quy tắc đặt tên data-game: snake | tetris | caro | flappy | brickbreaker | coming-soon -->
+        <div class="game-grid" id="game-grid" role="list">
+
+          <!-- ===== HÀNG 1 ===== -->
+
+          <!-- Ô 1: Rắn săn mồi (Snake Game) -->
+          <a
+            href="#"
+            class="game-card"
+            id="game-snake"
+            data-game="snake"
+            role="listitem"
+            aria-label="Chơi game Rắn săn mồi"
+            title="Rắn săn mồi"
+          >
+            <span class="game-card__badge">Mới</span>
+            <span class="game-card__icon" aria-hidden="true">🐍</span>
+            <span class="game-card__name">Rắn Săn Mồi</span>
+          </a>
+
+          <!-- Ô 2: Xếp gạch (Tetris) -->
+          <a
+            href="#"
+            class="game-card"
+            id="game-tetris"
+            data-game="tetris"
+            role="listitem"
+            aria-label="Chơi game Xếp gạch Tetris"
+            title="Xếp gạch - Tetris"
+          >
+            <span class="game-card__badge">Mới</span>
+            <span class="game-card__icon" aria-hidden="true">🧩</span>
+            <span class="game-card__name">Xếp Gạch</span>
+          </a>
+
+          <!-- Ô 3: Caro (Tic-Tac-Toe) -->
+          <a
+            href="#"
+            class="game-card"
+            id="game-caro"
+            data-game="caro"
+            role="listitem"
+            aria-label="Chơi game Caro"
+            title="Caro - Tic-Tac-Toe"
+          >
+            <span class="game-card__badge">Mới</span>
+            <span class="game-card__icon" aria-hidden="true">⭕</span>
+            <span class="game-card__name">Caro</span>
+          </a>
+
+          <!-- Ô 4: Flappy Bird -->
+          <a
+            href="#"
+            class="game-card"
+            id="game-flappy"
+            data-game="flappy"
+            role="listitem"
+            aria-label="Chơi game Flappy Bird"
+            title="Flappy Bird"
+          >
+            <span class="game-card__badge">Mới</span>
+            <span class="game-card__icon" aria-hidden="true">🐦</span>
+            <span class="game-card__name">Flappy Bird</span>
+          </a>
+
+          <!-- Ô 5: Phá gạch (Brick Breaker) -->
+          <a
+            href="#"
+            class="game-card"
+            id="game-brickbreaker"
+            data-game="brickbreaker"
+            role="listitem"
+            aria-label="Chơi game Phá gạch"
+            title="Phá gạch - Brick Breaker"
+          >
+            <span class="game-card__badge">Mới</span>
+            <span class="game-card__icon" aria-hidden="true">🧱</span>
+            <span class="game-card__name">Phá Gạch</span>
+          </a>
+
+          <!-- ===== HÀNG 2 - Các ô "Coming Soon" từ 6 đến 10 ===== -->
+
+          <!-- Ô 6: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-6"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- Ô 7: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-7"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- Ô 8: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-8"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- Ô 9: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-9"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- Ô 10: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-10"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- ===== HÀNG 3 - Các ô "Coming Soon" từ 11 đến 12 ===== -->
+
+          <!-- Ô 11: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-11"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+          <!-- Ô 12: Coming Soon -->
+          <div
+            class="game-card game-card--coming-soon"
+            id="game-slot-12"
+            data-game="coming-soon"
+            role="listitem"
+            aria-label="Game sắp ra mắt"
+          >
+            <span class="game-card__icon" aria-hidden="true">🔒</span>
+            <span class="game-card__name">Coming Soon</span>
+          </div>
+
+        </div><!-- /.game-grid -->
+      </section><!-- /.grid-container -->
+
+    </main><!-- /.main-content -->
+  </div><!-- /.main-layout -->
+
+  <!-- ============================================
+       TOAST THÔNG BÁO - Hiện khi game chưa sẵn sàng
+       ============================================ -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Liên kết file JavaScript xử lý logic -->
+  <script src="script.js"></script>
+
+</body>
+</html>
