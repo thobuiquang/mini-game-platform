@@ -139,6 +139,9 @@ function xuLyDangNhap(event) {
   // Hiện tại: Giả lập đăng nhập thành công và chuyển về trang chủ
   hienToast('✅ Đăng nhập thành công! Chào mừng ' + username + '!', 'success');
 
+  // Lưu tên đăng nhập vào sessionStorage để trang chủ đọc lại
+  sessionStorage.setItem('loggedUser', username);
+
   // Chuyển về trang chủ sau 1.5 giây
   setTimeout(() => {
     window.location.href = 'index.html';
@@ -351,7 +354,43 @@ function hienToast(noiDung) {
 }
 
 // ============================================================
-// PHẦN 8: KHỞI ĐỘNG KHI TRANG TẢI XONG
+// PHẦN 8: CẬP NHẬT HEADER KHI ĐÃ ĐĂNG NHẬP
+// ============================================================
+
+/**
+ * Kiểm tra sessionStorage xem người dùng đã đăng nhập chưa.
+ * Nếu có: ẩn nút ĐN/ĐK, hiện avatar + tên ở góc phải header.
+ */
+function capNhatHeaderNguoiDung() {
+  const tenDangNhap = sessionStorage.getItem('loggedUser');
+
+  const btnLogin    = document.getElementById('btn-header-login');
+  const btnRegister = document.getElementById('btn-header-register');
+  const userInfo    = document.getElementById('user-info');
+  const userAvatar  = document.getElementById('user-avatar');
+  const userName    = document.getElementById('user-display-name');
+
+  // Chỉ chạy nếu các phần tử tồn tại (trang chủ)
+  if (!btnLogin || !userInfo) return;
+
+  if (tenDangNhap) {
+    // Ẩn nút Đăng nhập và Đăng ký
+    btnLogin.style.display    = 'none';
+    btnRegister.style.display = 'none';
+
+    // Hiện khối user-info
+    userInfo.style.display = 'flex';
+
+    // Đặt chữ đại diện (ký tự đầu tiên của tên) làm nội dung avatar
+    userAvatar.textContent = tenDangNhap.charAt(0).toUpperCase();
+
+    // Hiển thị tên đăng nhập bên dưới
+    userName.textContent = tenDangNhap;
+  }
+}
+
+// ============================================================
+// PHẦN 9: KHỞI ĐỘNG KHI TRANG TẢI XONG
 // ============================================================
 
 /**
@@ -367,6 +406,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ===== KHỞI TẠO CHO TRANG CHỦ (index.html) =====
   if (laTrangChu || !laTrangAuth) {
+    // Cập nhật header nếu người dùng đã đăng nhập (ẩn nút ĐN/ĐK, hiện avatar)
+    capNhatHeaderNguoiDung();
+
     // Gắn sự kiện click cho các thẻ game
     khoiTaoLuoiGame();
 
