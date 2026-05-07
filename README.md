@@ -17,12 +17,12 @@
 ## 📁 Cấu trúc dự án
 - `/frontend`: Chứa mã nguồn giao diện web (được chuyển từ Figma sang code bằng AI).
 - `/backend`: Chứa logic hệ thống, API xử lý bằng Python.
-- `/docs`: Tài liệu đặc tả hệ thống (SRS), kịch bản kiểm thử (Test case).
+- `/docs`: Tài liệu đặc tả hệ thống (SRS)
 
 ## 🔗 Các liên kết báo cáo (Public)
 - **Link Figma:** https://www.figma.com/site/R8imrJbKtk1sdljvETSKVX/Untitled?node-id=0-1&p=f&t=vF8HEKwMsdIwcC8g-0
 - **Link Đặc tả SRS (Google Doc):** [Đang cập nhật...]
-- **Link Test Case (Google Excel):** [Đang cập nhật...]
+- **Link Test Case (Google Excel):** https://docs.google.com/spreadsheets/d/1O6wXv1LX40hZww-qSw54-Uz3jQEw5jLB/edit?gid=631729498#gid=631729498
 
 ## 🚀 Hướng dẫn chạy dự án (Local)
 1. Clone dự án về máy: `git clone https://github.com/thobuiquang/mini-game-platform.git`
